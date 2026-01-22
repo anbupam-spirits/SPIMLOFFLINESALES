@@ -33,7 +33,6 @@ if "user" not in st.session_state:
 # AFTER LOGIN
 # ======================================================
 sr_name = st.session_state.user
-
 st.title("DAILY STORE VISIT REPORTS")
 
 # ======================================================
@@ -95,7 +94,7 @@ remarks = st.text_area("REMARKS *")
 photo = st.camera_input("PHOTOGRAPH *")
 
 # ======================================================
-# LOCATION (BUTTON-BASED – WORKS ON ALL DEVICES)
+# LOCATION (BUTTON-BASED – RELIABLE)
 # ======================================================
 st.markdown("### 📍 LOCATION")
 
@@ -107,7 +106,7 @@ if "lon" not in st.session_state:
 if st.button("📍 RECORD LOCATION"):
     loc = get_browser_location()
 
-    if loc:
+    if isinstance(loc, dict) and "lat" in loc and "lon" in loc:
         st.session_state.lat = loc["lat"]
         st.session_state.lon = loc["lon"]
     else:
@@ -115,7 +114,7 @@ if st.button("📍 RECORD LOCATION"):
         st.session_state.lat = lat
         st.session_state.lon = lon
 
-if st.session_state.lat:
+if st.session_state.lat and st.session_state.lon:
     maps_link = f"https://www.google.com/maps?q={st.session_state.lat},{st.session_state.lon}"
     st.success("Location captured")
     st.markdown(f"[Open in Google Maps]({maps_link})")
@@ -123,6 +122,10 @@ if st.session_state.lat:
 else:
     maps_link = ""
     location_recorded = "NO"
+
+st.caption(
+    "📌 Tip: For best accuracy, use a mobile phone with GPS enabled and allow location permission."
+)
 
 # ======================================================
 # SUBMIT
@@ -147,20 +150,21 @@ if st.button("SUBMIT REPORT", type="primary"):
         st.error("Photograph is required")
         st.stop()
 
-    # ---- Image encoding (TEMP – safe) ----
+    now = datetime.now()
+
+    # ---- Image encoding (TEMP – safe, but will replace with Drive later) ----
     img = Image.open(photo)
     buf = BytesIO()
     img.save(buf, format="JPEG")
     photo_b64 = base64.b64encode(buf.getvalue()).decode()
 
-    now = datetime.now()
-
+    # ---- SAVE (ALL KEYS GUARANTEED) ----
     save_visit({
         "timestamp": now.strftime("%Y-%m-%d %H:%M:%S"),
         "store_name": store,
         "phone": phone,
         "time": now.strftime("%H:%M:%S"),
-        "photo_link": photo_b64,   # later replace with Drive URL
+        "photo_link": photo_b64,
         "products": ", ".join(products),
         "order_details": order_details,
         "location_recorded": location_recorded,
