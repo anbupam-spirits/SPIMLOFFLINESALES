@@ -38,27 +38,33 @@ def _get_sheet():
 
 # ---------------- WRITE ----------------
 
-def save_visit(data: dict):
-    sheet = _get_sheet()
-    sheet.append_row([
-        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),      # Timestamp
-        data["store_name"],                                # STORE NAME
-        data["phone"],                                     # PHONE NUMBER
-        data["time"],                                      # TIME
-        data["photo_b64"],                                 # PHOTOGRAPH
-        data["products"],                                  # PRODUCTS
-        data["order_details"],                             # ORDER DETAILS
-        data["location_recorded"],                         # LOCATION RECORDED
-        data["store_category"],                            # STORE CATEGORY
-        data["sr_name"],                                   # SR NAME
-        data["remarks"],                                   # REMARKS
-        data["lead_type"],                                 # LEAD TYPE
-        data["follow_up_date"],                             # FOLLOW UP DATE
-        data["visit_type"],                                # VISIT TYPE
-        data["date"],                                      # DATE
-        "",                                                 # ADMIN REMARKS
-        data["maps_link"]                                  # LOCATION LINK
-    ])
+def save_visit(data):
+    sheet = get_sheet()
+
+    row = [
+        data["timestamp"],                       # Timestamp
+        data["store_name"],                      # STORE NAME AND CONTACT PERSON
+        data["phone"],                           # PHONE NUMBER
+        data["time"],                            # TIME
+        data["photo_link"],                      # PHOTOGRAPH (Drive link)
+        data["products"],                        # TOBACCO PRODUCTS
+        data["order_details"],                   # ORDER DETAILS
+        data["location_recorded"],               # LOCATION RECORDED (YES/NO)
+        data["store_category"],                  # STORE CATEGORY
+        data["sr_name"],                         # SR NAME
+        data["remarks"],                         # REMARKS
+        data["lead_type"],                       # LEAD TYPE
+        data["follow_up_date"],                  # FOLLOW UP DATE
+        data["visit_type"],                      # STORE VISIT TYPE
+        data["date"],                            # DATE
+        "",                                      # ADMIN REMARKS
+        data["maps_link"],                       # LOCATION LINK
+    ]
+
+    # Ensure all values are strings
+    row = ["" if v is None else str(v) for v in row]
+
+    sheet.append_row(row, value_input_option="USER_ENTERED")
 
 # ---------------- READ ----------------
 
