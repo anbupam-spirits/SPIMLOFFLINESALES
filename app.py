@@ -1,4 +1,21 @@
 import streamlit as st
+
+st.set_page_config("Daily Store Visit", "📝", layout="wide")
+
+# ---------------- LOGIN ----------------
+if "user" not in st.session_state:
+    st.title("Login")
+
+    sr = st.text_input("SR Name")
+    if st.button("Login") and sr.strip():
+        st.session_state.user = sr.strip()
+        st.rerun()
+
+    st.stop()  # ⛔ stop execution until logged in
+
+# ---------------- SAFE AFTER LOGIN ----------------
+sr_name = st.session_state.user
+
 from gsheets_db import save_visit, get_all_store_names, get_last_visit
 from location import get_browser_location, get_ip_location
 from PIL import Image
