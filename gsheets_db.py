@@ -42,24 +42,28 @@ def save_visit(data):
     sheet = get_sheet()
 
     row = [
-        data["timestamp"],                       # Timestamp
-        data["store_name"],                      # STORE NAME AND CONTACT PERSON
-        data["phone"],                           # PHONE NUMBER
-        data["time"],                            # TIME
-        data["photo_link"],                      # PHOTOGRAPH (Drive link)
-        data["products"],                        # TOBACCO PRODUCTS
-        data["order_details"],                   # ORDER DETAILS
-        data["location_recorded"],               # LOCATION RECORDED (YES/NO)
-        data["store_category"],                  # STORE CATEGORY
-        data["sr_name"],                         # SR NAME
-        data["remarks"],                         # REMARKS
-        data["lead_type"],                       # LEAD TYPE
-        data["follow_up_date"],                  # FOLLOW UP DATE
-        data["visit_type"],                      # STORE VISIT TYPE
-        data["date"],                            # DATE
-        "",                                      # ADMIN REMARKS
-        data["maps_link"],                       # LOCATION LINK
+        data.get("timestamp", ""),            # Timestamp
+        data.get("store_name", ""),            # STORE NAME
+        data.get("phone", ""),                 # PHONE NUMBER
+        data.get("time", ""),                  # TIME
+        data.get("photo_link", ""),            # PHOTOGRAPH
+        data.get("products", ""),              # PRODUCTS
+        data.get("order_details", ""),         # ORDER DETAILS
+        data.get("location_recorded", ""),     # LOCATION RECORDED
+        data.get("store_category", ""),        # STORE CATEGORY
+        data.get("sr_name", ""),               # SR NAME
+        data.get("remarks", ""),               # REMARKS
+        data.get("lead_type", ""),             # LEAD TYPE
+        data.get("follow_up_date", ""),        # FOLLOW UP DATE
+        data.get("visit_type", ""),             # VISIT TYPE
+        data.get("date", ""),                  # DATE
+        "",                                     # ADMIN REMARKS
+        data.get("maps_link", ""),              # LOCATION LINK
     ]
+
+    row = ["" if v is None else str(v) for v in row]
+
+    sheet.append_row(row, value_input_option="USER_ENTERED")
 
     # Ensure all values are strings
     row = ["" if v is None else str(v) for v in row]
